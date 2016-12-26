@@ -1,0 +1,15 @@
+{%- extends "starterkit/blueprints/starterkit.html" -%}
+
+{% block body %}
+  <div id="hello">
+    {{ _("Hello, {whom}!").format(whom=whom) }}
+  </div>
+<div>
+  <h1>Welcome to Docker Flask Starterkit</h1>
+  <p>
+    This is a sample instance of
+    <a href="https://gitlab.com/tvaughan/docker-flask-starterkit">docker-flask-starterkit</a>.
+    Please see its documentation and source code to learn more. It's awesome!
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{
+    "variables": {
+        "aws_access_key_id": "{{env `AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_access_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+        "aws_default_region": "{{env `AWS_DEFAULT_REGION`}}",
+        "starterkit_version": "{{env `STARTERKIT_VERSION`}}"
+    },
+    "builders": [{
+        "access_key": "{{user `aws_access_key_id`}}",
+        "secret_key": "{{user `aws_secret_access_key`}}",
+        "region": "{{user `aws_default_region`}}",
+        "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name": "CoreOS-stable-*-hvm",
+                "root-device-type": "ebs"
+            },
+            "owners": ["595879546273"],
+            "most_recent": true
+        },
+        "instance_type": "t2.micro",
+        "ssh_username": "core",
+        "ami_name": "starterkit-{{user `starterkit_version`}}",
+        "type": "amazon-ebs"
+    }],
+    "provisioners": [
+        {
+            "source": "./coreos",
+            "destination": "/tmp",
+            "type": "file"
+        },
+        {
+            "inline": [
+                "sudo rsync -r /tmp/coreos/ /"
+            ],
+            "type": "shell"
+        },
+        {
+            "inline": [
+                "/var/opt/starterkit/bin/provision"
+            ],
+            "type": "shell"
+        }
+    ],
+    "post-processors": [
+        {
+            "output": "packer-manifest.json",
+            "type": "manifest"
+        }
+    ]
+}

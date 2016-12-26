@@ -1,0 +1,7 @@
+[Unit]
+Description=Prune dangling docker image layers.
+
+[Service]
+Type=oneshot
+TimeoutStartSec=360
+ExecStart=/bin/sh -c 'exec docker images -q -f "dangling=true" | xargs -r -L1 docker rmi'

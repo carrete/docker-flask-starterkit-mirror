@@ -1,0 +1,49 @@
+image: registry.gitlab.com/tvaughan/gitlab-ci-docker-builder:latest
+
+services:
+  - docker:dind
+  - postgres:10
+
+variables:
+  POSTGRES_USER: starterkit
+
+stages:
+  - test
+  - publish-pkgs
+  - create-ami
+
+test:
+  stage: test
+  environment:
+    name: testing
+  script:
+    - make build
+    - | # TODO: Cannot use GitLab CI variables in `variables:` section.
+      export POSTGRES_HOSTNAME=$POSTGRES_PORT_5432_TCP_ADDR
+      export POSTGRES_TCP_PORT=$POSTGRES_PORT_5432_TCP_PORT
+      export POSTGRES_USERNAME=$POSTGRES_USER
+      make lint
+    - | # TODO: Cannot use GitLab CI variables in `variables:` section.
+      export POSTGRES_HOSTNAME=$POSTGRES_PORT_5432_TCP_ADDR
+      export POSTGRES_TCP_PORT=$POSTGRES_PORT_5432_TCP_PORT
+      export POSTGRES_USERNAME=$POSTGRES_USER
+      make test
+    - make push
+
+publish-pkgs:
+  stage: publish-pkgs
+  environment:
+    name: production
+  script:
+    - make publish-pkgs
+  only:
+    - master
+
+create-ami:
+  stage: create-ami
+  environment:
+    name: production
+  script:
+    - make create-ami
+  only:
+    - master

@@ -1,0 +1,9 @@
+[Unit]
+Description=Create starterkit bridge network.
+After=docker.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=/var/cache/starterkit/environment
+Type=oneshot
+ExecStart=/var/opt/starterkit/bin/create-network starterkit-network

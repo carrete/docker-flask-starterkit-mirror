@@ -1,0 +1,12 @@
+[Unit]
+Description=Create self-signed snakeoil certificate.
+
+[Service]
+EnvironmentFile=/var/cache/starterkit/environment
+Type=oneshot
+TimeoutStartSec=360
+ExecStartPre=/usr/bin/docker volume create --name ssl-cert-volume
+ExecStart=/usr/bin/docker run --rm                                              \
+    -v ssl-cert-volume:/mnt/workdir                                             \
+    registry.gitlab.com/tvaughan/docker-nginx-proxy-unit:latest                 \
+    create-snakeoil-cert
