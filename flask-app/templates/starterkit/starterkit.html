@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="{{ locale.language }}">
+  <head>
+    <meta charset="utf-8">
+    <title>Docker Flask Starterkit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ hashed_url_for('/css/starterkit.min.css') }}">
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <div>
+      <img src="{{ hashed_url_for('/images/starterkit.png') }}">
+      <hr>
+      {% block body %}{% endblock %}
+    </div>
+    {% block tail %}{% endblock %}
+    <script src="{{ hashed_url_for('/js/starterkit.min.js') }}"></script>
+  </body>
+</html>

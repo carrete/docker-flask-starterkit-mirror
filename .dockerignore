@@ -1,0 +1,6 @@
+flask-app/*.egg-info
+flask-app/*.pyc
+flask-app/.cache
+flask-app/.coverage
+flask-app/.pytest*
+flask-app/htmlcov

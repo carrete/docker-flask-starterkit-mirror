@@ -1,0 +1,23 @@
+[Unit]
+Description=Flask Starterkit App
+After=postgres.service
+Requires=postgres.service
+
+[Service]
+EnvironmentFile=/var/cache/starterkit/environment
+TimeoutStartSec=360
+ExecStartPre=/usr/bin/docker pull ${CONTAINER}
+ExecStartPre=/usr/bin/docker volume create --name www-volume
+ExecStart=/usr/bin/docker run --network starterkit-network --name %p            \
+    -e POSTGRES_HOSTNAME=${POSTGRES_HOSTNAME}                                   \
+    -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD}                                   \
+    -e SECRET_KEY=${SECRET_KEY}                                                 \
+    -e SENTRY_DSN=${SENTRY_DSN}                                                 \
+    -e STARTERKIT_ENVIRONMENT=production                                        \
+    -v www-volume:/srv/www                                                      \
+    ${CONTAINER}
+ExecStop=/usr/bin/docker stop %p
+ExecStopPost=/usr/bin/docker rm %p
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# -*- mode: sh; coding: utf-8; tab-width: 4; indent-tabs-mode: nil -*-
+set -euo pipefail
+IFS=$'\n\t'
+
+readonly NETWORK=$1
+
+if [[ -z $NETWORK ]]
+then
+    echo Usage: $(basename $0) NETWORK
+    exit 0
+fi
+
+if [[ -z $(docker network inspect --format=CREATED $NETWORK) ]]
+then
+    docker network create --driver bridge $NETWORK
+fi
+
+exit 0

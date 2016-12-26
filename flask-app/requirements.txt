@@ -1,0 +1,20 @@
+# Flask Starterkit
+bandit==1.5.1
+beautifulsoup4==4.6.3
+black==18.6b4
+blinker==1.4
+coverage==4.5.1
+flask-admin==1.5.2
+flask-babel==0.11.2
+flask-migrate==2.2.1
+flask-script==2.0.6
+flask-sqlalchemy==2.3.2
+flask==1.0.2
+html5lib==1.0.1
+psycopg2-binary==2.7.5
+pytest-cov==2.6.0
+pytest==3.8.0
+pyupio==1.0.2
+pyyaml==3.13
+raven[flask]==6.9.0
+safety==1.8.4

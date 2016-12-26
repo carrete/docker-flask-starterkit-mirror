@@ -1,0 +1,15 @@
+[Unit]
+Description=Renew Let's Encrypt certificate.
+
+[Service]
+Type=oneshot
+TimeoutStartSec=360
+ExecStartPre=/usr/bin/docker pull registry.gitlab.com/tvaughan/docker-letsencrypt:latest
+ExecStartPre=/usr/bin/systemctl stop nginx-proxy-unit.service
+ExecStart=/usr/bin/docker run --rm                                              \
+    -p 80:80 -p 443:443                                                         \
+    -v letsencrypt-volume:/etc/letsencrypt                                      \
+    -v ssl-cert-volume:/mnt/workdir                                             \
+    registry.gitlab.com/tvaughan/docker-letsencrypt:latest                      \
+    letsencrypt renew
+ExecStartPost=/usr/bin/systemctl start nginx-proxy-unit.service

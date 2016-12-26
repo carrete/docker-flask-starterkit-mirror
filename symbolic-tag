@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# -*- mode: sh; coding: utf-8; tab-width: 4; indent-tabs-mode: nil -*-
+set -euo pipefail
+IFS=$'\n\t'
+
+function current-branch {
+    git symbolic-ref --short HEAD
+}
+
+function symbolic-tag {
+    readonly BRANCH=${1:-unknown-branch-name}
+
+    if [[ $BRANCH == master ]]
+    then
+        echo latest
+    else
+        echo $BRANCH
+    fi
+}
+
+symbolic-tag ${CI_BUILD_REF_NAME:-$(current-branch)}

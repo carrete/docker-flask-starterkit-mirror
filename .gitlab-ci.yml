@@ -1,0 +1,35 @@
+image: registry.gitlab.com/tvaughan/gitlab-ci-docker-builder:latest
+
+services:
+  - docker:dind
+  - postgres:10
+
+variables:
+  POSTGRES_DB: starterkit
+  POSTGRES_USER: starterkit
+
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  environment:
+    name: testing
+  script:
+    - make build
+    - make lint
+    - | # TODO: Cannot use GitLab CI variables in `variables:` section.
+      export POSTGRES_HOSTNAME=$POSTGRES_PORT_5432_TCP_ADDR
+      make test
+    - make push
+
+deploy:
+  stage: deploy
+  environment:
+    name: production
+  script:
+    - eval $(ssh-agent)
+    - make deploy
+  only:
+    - master
