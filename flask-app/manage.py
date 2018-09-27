@@ -1,25 +1,17 @@
-# -*- coding: utf-8 -*-
-
-from flask_migrate import MigrateCommand
-from flask_script import Manager
-
-from starterkit.app import create_app
-from starterkit.commands import create_db
-from starterkit.db import db
-from starterkit.hashedassets import HashAssetsCommand
-
-app = create_app()
-manager = Manager(app)
-
-manager.add_command("hashassets", HashAssetsCommand)
-manager.add_command("db", MigrateCommand)
-
-
-@manager.command
-def createdb():
-    """Create SQL database tables."""
-    create_db(db, app)
-
+#!/usr/bin/env python3
+import os
+import sys
 
 if __name__ == "__main__":
-    manager.run()
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE", "starterkit.settings.{}".format(os.environ["STARTERKIT_ENVIRONMENT"])
+    )
+    try:
+        from django.core.management import execute_from_command_line
+    except ImportError as exc:
+        raise ImportError(
+            "Couldn't import Django. Are you sure it's installed and "
+            "available on your PYTHONPATH environment variable? Did you "
+            "forget to activate a virtual environment?"
+        ) from exc
+    execute_from_command_line(sys.argv)

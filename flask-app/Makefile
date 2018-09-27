@@ -1,6 +1,6 @@
 SHELL = bash
 
-.PHONY: .shell .watch all build check-dependencies check-quality check-style check-vulnerabilities compile-messages create-assets create-db create-locale extract-messages format is-defined-% is-in-container lint minify-css minify-js serve set-perms setup-tests shell test update-messages watch
+.PHONY: .shell .watch all build check-dependencies check-quality check-style check-vulnerabilities compile-messages create-assets create-db create-locale format is-defined-% is-in-container lint minify-css minify-js serve set-perms setup-tests shell test update-messages watch
 
 all: lint test
 
@@ -36,9 +36,9 @@ create-assets: minify-css minify-js
 	@chown -R www-data:www-data /srv/www/site/static
 
 create-db: is-in-container
-	@python3 manage.py createdb
+	@python3 manage.py migrate
 
-build: create-assets create-db
+build: create-db
 	@cp unit-conf.json /var/lib/unit/conf.json
 
 format: is-in-container
@@ -88,13 +88,10 @@ shell: .shell set-perms
 watch: .watch set-perms
 
 create-locale: is-in-container is-defined-LANGUAGE
-	@pybabel init -d translations -i messages.pot -l $(LANGUAGE)
-
-extract-messages: is-in-container
-	@pybabel extract --no-wrap -F babel.cfg -o messages.pot .
+	@cd starterkit && python3 ../manage.py makemessages -l $(LANGUAGE)
 
 update-messages: is-in-container
-	@pybabel update --no-wrap -d translations -i messages.pot
+	@cd starterkit && python3 ../manage.py makemessages -a
 
 compile-messages: is-in-container
-	@pybabel compile -d translations
+	@cd starterkit && python3 ../manage.py compilemessages

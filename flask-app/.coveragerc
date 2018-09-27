@@ -2,6 +2,7 @@
 branch = True
 omit =
     */tests/*.py
+    */settings/development.py
     */settings/production.py
 
 [report]
