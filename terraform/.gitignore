@@ -1,0 +1,4 @@
+.envrc
+.sshrc
+.terraform/
+terraform.plan
