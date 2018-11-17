@@ -6,7 +6,7 @@ Requires=create-network.service
 [Service]
 EnvironmentFile=/var/cache/starterkit/environment
 TimeoutStartSec=360
-ExecStartPre=/usr/bin/docker pull registry.hub.docker.com/library/postgres:10
+ExecStartPre=/usr/bin/docker pull registry.hub.docker.com/library/postgres:11
 ExecStartPre=/usr/bin/docker volume create --name postgres-volume
 ExecStart=/usr/bin/docker run --network starterkit-network                      \
     --name ${POSTGRES_HOSTNAME}                                                 \
@@ -14,7 +14,7 @@ ExecStart=/usr/bin/docker run --network starterkit-network                      
     -e POSTGRES_USER=${POSTGRES_USERNAME}                                       \
     -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD}                                   \
     -v postgres-volume:/var/lib/postgresql/data                                 \
-    registry.hub.docker.com/library/postgres:10                                 \
+    registry.hub.docker.com/library/postgres:11                                 \
     postgres -p ${POSTGRES_TCP_PORT}
 ExecStop=/usr/bin/docker stop %p
 ExecStopPost=/usr/bin/docker rm %p

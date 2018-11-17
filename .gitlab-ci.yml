@@ -2,7 +2,7 @@ image: registry.gitlab.com/tvaughan/gitlab-ci-docker-builder:latest
 
 services:
   - docker:dind
-  - postgres:10
+  - postgres:11
 
 variables:
   POSTGRES_USER: starterkit

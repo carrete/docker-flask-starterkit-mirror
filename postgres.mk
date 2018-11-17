@@ -2,7 +2,7 @@ SHELL = bash
 
 REGISTRY = registry.hub.docker.com
 CONTAINER = library/postgres
-VERSION = 10
+VERSION = 11
 
 .PHONY: all serve
 
