@@ -4,9 +4,7 @@ After=flask-app.service create-default-site.service create-htpasswd.service crea
 Requires=flask-app.service create-default-site.service create-htpasswd.service create-snakeoil-cert.service
 
 [Service]
-TimeoutStartSec=360
-ExecStartPre=/usr/bin/docker pull registry.gitlab.com/tvaughan/docker-nginx-proxy-unit:latest
-ExecStart=/usr/bin/docker run --network starterkit-network --name %p            \
+ExecStart=/usr/bin/docker run --name %p                                         \
     -p 8080:80 -p 8443:443                                                         \
     -v default-site-volume:/etc/nginx/sites-enabled:ro                          \
     -v ssl-cert-volume:/srv/ssl:ro                                              \

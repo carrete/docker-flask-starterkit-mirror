@@ -4,9 +4,6 @@ Description=Create default site.
 [Service]
 EnvironmentFile=/var/cache/starterkit/environment
 Type=oneshot
-TimeoutStartSec=360
-ExecStartPre=/usr/bin/docker pull registry.gitlab.com/tvaughan/docker-nginx-proxy-unit:latest
-ExecStartPre=/usr/bin/docker volume create --name default-site-volume
 ExecStart=/usr/bin/docker run --rm                                              \
     -e CANONICAL_HOST=www.${STARTERKIT_DOMAIN}                                  \
     -e CANONICAL_PORT=443                                                       \

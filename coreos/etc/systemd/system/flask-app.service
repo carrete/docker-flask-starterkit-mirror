@@ -1,14 +1,11 @@
 [Unit]
 Description=Flask Starterkit App
-After=create-network.service
-Requires=create-network.service
+After=docker.service
+Requires=docker.service
 
 [Service]
 EnvironmentFile=/var/cache/starterkit/environment
-TimeoutStartSec=360
-ExecStartPre=/usr/bin/docker pull ${CONTAINER}
-ExecStartPre=/usr/bin/docker volume create --name www-volume
-ExecStart=/usr/bin/docker run --network starterkit-network --name %p            \
+ExecStart=/usr/bin/docker run --name %p                                         \
     -e POSTGRES_USERNAME=${POSTGRES_USERNAME}                                   \
     -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD}                                   \
     -e POSTGRES_HOSTNAME=${POSTGRES_HOSTNAME}                                   \

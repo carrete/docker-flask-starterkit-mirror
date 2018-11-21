@@ -14,14 +14,14 @@ pull-latest: network-create-starterkit
 	@docker pull $(REGISTRY)/$(CONTAINER):$(VERSION)
 
 .PHONY: create-ssl-cert
-create-ssl-cert: pull-latest volume-create-ssl-cert
+create-ssl-cert: pull-latest
 	@docker run --network starterkit-network --rm				\
 	    -v ssl-cert-volume:/mnt/workdir					\
 	    $(REGISTRY)/$(CONTAINER):$(VERSION)					\
 	    create-snakeoil-cert
 
 .PHONY: create-htpasswd
-create-htpasswd: is-defined-ADMIN_USERNAME is-defined-ADMIN_PASSWORD pull-latest volume-create-www
+create-htpasswd: is-defined-ADMIN_USERNAME is-defined-ADMIN_PASSWORD pull-latest
 	@docker run --network starterkit-network --rm				\
 	    -e USERNAME="$(ADMIN_USERNAME)"					\
 	    -e PASSWORD="$(ADMIN_PASSWORD)"					\
@@ -30,7 +30,7 @@ create-htpasswd: is-defined-ADMIN_USERNAME is-defined-ADMIN_PASSWORD pull-latest
 	    create-htpasswd
 
 .PHONY: create-default-site
-create-default-site: pull-latest volume-create-default-site
+create-default-site: pull-latest
 	@docker run --network starterkit-network --rm				\
 	    -e CANONICAL_HOST=localhost.localdomain				\
 	    -e CANONICAL_PORT=8443						\

@@ -1,14 +1,11 @@
 [Unit]
 Description=Postgresql
-After=create-network.service
-Requires=create-network.service
+After=docker.service
+Requires=docker.service
 
 [Service]
 EnvironmentFile=/var/cache/starterkit/environment
-TimeoutStartSec=360
-ExecStartPre=/usr/bin/docker pull registry.hub.docker.com/library/postgres:11
-ExecStartPre=/usr/bin/docker volume create --name postgres-volume
-ExecStart=/usr/bin/docker run --network starterkit-network                      \
+ExecStart=/usr/bin/docker run                                                   \
     --name ${POSTGRES_HOSTNAME}                                                 \
     -e POSTGRES_DB=starterkit                                                   \
     -e POSTGRES_USER=${POSTGRES_USERNAME}                                       \

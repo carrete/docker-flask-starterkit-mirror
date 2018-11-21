@@ -1,8 +1,0 @@
-[Unit]
-Description=Run prune-docker-images.service once a day.
-
-[Timer]
-OnCalendar=daily
-
-[Install]
-WantedBy=timers.target

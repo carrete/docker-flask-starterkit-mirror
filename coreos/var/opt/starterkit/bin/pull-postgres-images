@@ -6,6 +6,7 @@ errcode=0
 readonly script="$(readlink -f "$0")"
 
 function on_exit {
+    sudo rm -rf /root/.docker*
     exit $errcode
 }
 
@@ -19,18 +20,17 @@ function on_error {
 
 trap 'on_error $? $LINENO' ERR
 
+. /var/cache/starterkit/environment
 
-readonly NETWORK=$1
+echo "$GITLAB_PASSWORD" | sudo docker login --password-stdin -u "$GITLAB_USERNAME" $REGISTRY
 
-if [[ -z $NETWORK ]]
-then
-    echo Usage: $(basename $0) NETWORK
-    exit 0
-fi
+readonly IMAGES="
+    registry.hub.docker.com/library/postgres:11
+"
 
-if [[ -z $(docker network inspect --format=CREATED $NETWORK) ]]
-then
-    docker network create --driver bridge $NETWORK
-fi
+for IMAGE in $IMAGES
+do
+    docker pull $(echo -n "${IMAGE//[[:space:]]/}")
+done
 
 exit 0

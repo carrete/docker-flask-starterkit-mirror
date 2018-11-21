@@ -6,6 +6,7 @@ errcode=0
 readonly script="$(readlink -f "$0")"
 
 function on_exit {
+    sudo rm -rf /root/.docker*
     exit $errcode
 }
 
@@ -19,18 +20,15 @@ function on_error {
 
 trap 'on_error $? $LINENO' ERR
 
+. /var/cache/starterkit/environment
 
-readonly NETWORK=$1
+readonly SERVICES="
+    postgres.service
+"
 
-if [[ -z $NETWORK ]]
-then
-    echo Usage: $(basename $0) NETWORK
-    exit 0
-fi
+sudo systemctl daemon-reload
+echo $SERVICES | xargs sudo systemctl enable
 
-if [[ -z $(docker network inspect --format=CREATED $NETWORK) ]]
-then
-    docker network create --driver bridge $NETWORK
-fi
+# TODO: sudo systemctl start pull-postgres-images.service
 
 exit 0
