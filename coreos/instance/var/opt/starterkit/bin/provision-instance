@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# -*- mode: sh; coding: utf-8; tab-width: 4; indent-tabs-mode: nil -*-
+set -euo pipefail
+IFS=$'\n\t'
+errcode=0
+readonly script="$(readlink -f "$0")"
+
+function on_exit {
+    exit $errcode
+}
+
+trap on_exit EXIT
+
+function on_error {
+    errcode=$1  # NOTE: errcode is global
+    linenum=$2
+    echo "[ERROR] script: $script errcode: $errcode linenum: $linenum"
+}
+
+trap 'on_error $? $LINENO' ERR
+
+. /var/cache/starterkit/environment
+
+readonly SERVICES="
+    flask-app.service
+    nginx-proxy-unit-sidecar.service
+    nginx-proxy-unit.service
+"
+
+sudo systemctl daemon-reload
+echo $SERVICES | xargs sudo systemctl enable
+
+exit 0

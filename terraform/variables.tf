@@ -1,14 +1,14 @@
 # -*- coding: utf-8; mode: terraform -*-
 
-variable "postgres_username" {
+variable "starterkit_database_username" {
   # This must not have a default.
 }
 
-variable "postgres_password" {
+variable "starterkit_database_password" {
   # This must not have a default.
 }
 
-variable "postgres_tcp_port" {
+variable "starterkit_database_tcp_port" {
   # This must not have a default.
 }
 

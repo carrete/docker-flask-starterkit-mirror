@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# -*- mode: sh; coding: utf-8; tab-width: 4; indent-tabs-mode: nil -*-
+set -euo pipefail
+IFS=$'\n\t'
+errcode=0
+readonly script="$(readlink -f "$0")"
+
+ETCDCTL_API=3
+export ETCDCTL_API
+
+function on_exit {
+    etcdctl del /traefik/backends/nginx-proxy-unit-8080/servers/$DEFAULT_IPV4
+    etcdctl del /traefik/backends/nginx-proxy-unit-8443/servers/$DEFAULT_IPV4
+    exit $errcode
+}
+
+trap on_exit EXIT
+
+function on_error {
+    errcode=$1  # NOTE: errcode is global
+    linenum=$2
+    echo "[ERROR] script: $script errcode: $errcode linenum: $linenum"
+}
+
+trap 'on_error $? $LINENO' ERR
+
+while true
+do
+    if ! curl -fks -H "Host: $CANONICAL_HOST" https://$DEFAULT_IPV4:8443/healthcheck
+    then
+        continue
+    fi
+    LEASE_ID=$(etcdctl lease grant 10 | awk '{ print $2; }')
+    etcdctl put --lease $LEASE_ID /traefik/backends/nginx-proxy-unit-8080/servers/$DEFAULT_IPV4/url  http://$DEFAULT_IPV4:8080
+    etcdctl put --lease $LEASE_ID /traefik/backends/nginx-proxy-unit-8443/servers/$DEFAULT_IPV4/url https://$DEFAULT_IPV4:8443
+    sleep 5
+done
+
+exit 0

@@ -1,3 +1,7 @@
+*.ign
+*.ign.merged
+*.img
+*.vmdk
 .envrc
 .sshrc
 .vagrant

@@ -4,9 +4,9 @@ module "starterkit-mirror" {
   source  = "carrete/starterkit-mirror/aws"
   version = "~> 0"
 
-  postgres_username = "${var.postgres_username}"
-  postgres_password = "${var.postgres_password}"
-  postgres_tcp_port = "${var.postgres_tcp_port}"
+  starterkit_database_username = "${var.starterkit_database_username}"
+  starterkit_database_password = "${var.starterkit_database_password}"
+  starterkit_database_tcp_port = "${var.starterkit_database_tcp_port}"
 
   starterkit_domain = "${var.starterkit_domain}"
   starterkit_region = "${var.starterkit_region}"

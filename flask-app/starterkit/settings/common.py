@@ -15,10 +15,10 @@ HASHEDASSETS_OUT_DIR = "/srv/www/site/static"
 HASHEDASSETS_URL_PREFIX = "/static/"
 
 SQLALCHEMY_DATABASE_URI = "postgresql://{}:{}@{}:{}/{}".format(
-    os.environ["POSTGRES_USERNAME"],
-    os.environ["POSTGRES_PASSWORD"],
-    os.environ["POSTGRES_HOSTNAME"],
-    os.environ["POSTGRES_TCP_PORT"],
+    os.environ["STARTERKIT_DATABASE_USERNAME"],
+    os.environ["STARTERKIT_DATABASE_PASSWORD"],
+    os.environ["STARTERKIT_DATABASE_HOSTNAME"],
+    os.environ["STARTERKIT_DATABASE_TCP_PORT"],
     os.environ["STARTERKIT_ENVIRONMENT"],
 )
 SQLALCHEMY_TRACK_MODIFICATIONS = False

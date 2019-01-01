@@ -1,0 +1,24 @@
+[Unit]
+Description=Starterkit Database
+After=docker.service create-network-environment.service
+Requires=docker.service create-network-environment.service
+
+[Service]
+TimeoutStartSec=360
+EnvironmentFile=/var/cache/starterkit/environment
+EnvironmentFile=/var/cache/starterkit/network
+Environment="IMAGE=registry.hub.docker.com/library/postgres:11"
+ExecStartPre=/var/opt/starterkit/bin/pull-image ${IMAGE}
+ExecStart=/usr/bin/docker run --name %p                                         \
+    -e POSTGRES_DB=starterkit                                                   \
+    -e POSTGRES_USER=${STARTERKIT_DATABASE_USERNAME}                            \
+    -e POSTGRES_PASSWORD=${STARTERKIT_DATABASE_PASSWORD}                        \
+    -p ${STARTERKIT_DATABASE_TCP_PORT}:${STARTERKIT_DATABASE_TCP_PORT}          \
+    -v database-volume:/var/lib/postgresql/data                                 \
+    ${IMAGE}                                                                    \
+    postgres -p ${STARTERKIT_DATABASE_TCP_PORT}
+ExecStop=/usr/bin/docker stop %p
+ExecStopPost=/usr/bin/docker rm %p
+
+[Install]
+WantedBy=multi-user.target

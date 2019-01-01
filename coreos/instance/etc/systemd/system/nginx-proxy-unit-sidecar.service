@@ -1,0 +1,12 @@
+[Unit]
+Description=Nginx Proxy Unit Sidecar
+After=nginx-proxy-unit.service create-network-environment.service
+Requires=nginx-proxy-unit.service create-network-environment.service
+
+[Service]
+EnvironmentFile=/var/cache/starterkit/environment
+EnvironmentFile=/var/cache/starterkit/network
+ExecStart=/var/opt/starterkit/bin/nginx-proxy-unit-sidecar
+
+[Install]
+WantedBy=multi-user.target

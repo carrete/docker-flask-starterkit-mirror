@@ -1,8 +1,11 @@
-flask-app/*.egg-info
-flask-app/*.pyc
+flask-app/**/*.egg-info
+flask-app/**/*.pyc
+flask-app/**/__pycache__
 flask-app/.cache
 flask-app/.coverage
 flask-app/.pytest*
 flask-app/build
 flask-app/dist
 flask-app/htmlcov
+flask-app/static/build/css/*.css
+flask-app/static/build/js/*.js

@@ -1,0 +1,17 @@
+[Unit]
+Description=Create Let's Encrypt certificate.
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=360
+Type=oneshot
+EnvironmentFile=/var/cache/starterkit/environment
+Environment="IMAGE=registry.gitlab.com/tvaughan/docker-letsencrypt:latest"
+ExecStartPre=/var/opt/starterkit/bin/pull-image ${IMAGE}
+ExecStart=/usr/bin/docker run --rm                                              \
+    -p 80:80 -p 443:443                                                         \
+    -v letsencrypt-volume:/etc/letsencrypt                                      \
+    -v ssl-cert-volume:/mnt/workdir                                             \
+    ${IMAGE}                                                                    \
+    create-letsencrypt-cert ${STARTERKIT_DOMAIN} postmaster@${STARTERKIT_DOMAIN}

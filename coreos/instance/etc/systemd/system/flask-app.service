@@ -1,0 +1,26 @@
+[Unit]
+Description=Flask Starterkit App
+After=docker.service create-network-environment.service
+Requires=docker.service create-network-environment.service
+
+[Service]
+TimeoutStartSec=360
+EnvironmentFile=/var/cache/starterkit/environment
+EnvironmentFile=/var/cache/starterkit/network
+ExecStartPre=/var/opt/starterkit/bin/pull-image ${CONTAINER}
+ExecStart=/usr/bin/docker run --name %p                                         \
+    -e STARTERKIT_DATABASE_USERNAME=${STARTERKIT_DATABASE_USERNAME}             \
+    -e STARTERKIT_DATABASE_PASSWORD=${STARTERKIT_DATABASE_PASSWORD}             \
+    -e STARTERKIT_DATABASE_HOSTNAME=${STARTERKIT_DATABASE_HOSTNAME}             \
+    -e STARTERKIT_DATABASE_TCP_PORT=${STARTERKIT_DATABASE_TCP_PORT}             \
+    -e SECRET_KEY=${SECRET_KEY}                                                 \
+    -e SENTRY_DSN=${SENTRY_DSN}                                                 \
+    -e STARTERKIT_ENVIRONMENT=production                                        \
+    -p 3000:3000                                                                \
+    -v www-volume:/srv/www                                                      \
+    ${CONTAINER}
+ExecStop=/usr/bin/docker stop %p
+ExecStopPost=/usr/bin/docker rm %p
+
+[Install]
+WantedBy=multi-user.target

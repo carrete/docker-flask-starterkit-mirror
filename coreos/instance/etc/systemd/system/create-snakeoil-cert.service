@@ -1,0 +1,15 @@
+[Unit]
+Description=Create self-signed snakeoil certificate.
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=360
+Type=oneshot
+EnvironmentFile=/var/cache/starterkit/environment
+Environment="IMAGE=registry.gitlab.com/tvaughan/docker-openssl:latest"
+ExecStartPre=/var/opt/starterkit/bin/pull-image ${IMAGE}
+ExecStart=/usr/bin/docker run --rm                                              \
+    -v ssl-cert-volume:/mnt/workdir                                             \
+    ${IMAGE}                                                                    \
+    create-snakeoil-cert

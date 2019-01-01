@@ -1,0 +1,10 @@
+[Unit]
+Description=Create starterkit network environment.
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=360
+EnvironmentFile=/var/cache/starterkit/environment
+Type=oneshot
+ExecStart=/var/opt/starterkit/bin/create-network-environment

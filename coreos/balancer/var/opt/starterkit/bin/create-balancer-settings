@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# -*- mode: sh; coding: utf-8; tab-width: 4; indent-tabs-mode: nil -*-
+set -euo pipefail
+IFS=$'\n\t'
+errcode=0
+readonly script="$(readlink -f "$0")"
+
+function on_exit {
+    exit $errcode
+}
+
+trap on_exit EXIT
+
+function on_error {
+    errcode=$1  # NOTE: errcode is global
+    linenum=$2
+    echo "[ERROR] script: $script errcode: $errcode linenum: $linenum"
+}
+
+trap 'on_error $? $LINENO' ERR
+
+ETCDCTL_API=3
+export ETCDCTL_API
+
+etcdctl put /traefik/insecureskipverify true
+
+etcdctl put /traefik/entrypoints/8888/address ":8888"
+etcdctl put /traefik/api/dashboard true
+etcdctl put /traefik/api/entrypoint "8888"
+
+etcdctl put /traefik/entrypoints/8080/address ":8080"
+etcdctl put /traefik/frontends/nginx-proxy-unit-8080/backend "nginx-proxy-unit-8080"
+etcdctl put /traefik/frontends/nginx-proxy-unit-8080/entrypoints "8080"
+etcdctl put /traefik/frontends/nginx-proxy-unit-8080/proxyhostheader true
+
+etcdctl put /traefik/entrypoints/8443/address ":8443"
+etcdctl put /traefik/entrypoints/8443/tls/certificates/0/certfile "/srv/ssl/fullchain.pem"
+etcdctl put /traefik/entrypoints/8443/tls/certificates/0/keyfile  "/srv/ssl/privkey.pem"
+etcdctl put /traefik/frontends/nginx-proxy-unit-8443/backend "nginx-proxy-unit-8443"
+etcdctl put /traefik/frontends/nginx-proxy-unit-8443/entrypoints "8443"
+etcdctl put /traefik/frontends/nginx-proxy-unit-8443/proxyhostheader true
+
+exit 0

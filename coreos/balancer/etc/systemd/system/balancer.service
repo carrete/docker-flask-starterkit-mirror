@@ -1,0 +1,22 @@
+[Unit]
+Description=Traefik
+After=docker.service create-network-environment.service create-snakeoil-cert.service
+Requires=docker.service create-network-environment.service create-snakeoil-cert.service
+
+[Service]
+TimeoutStartSec=360
+EnvironmentFile=/var/cache/starterkit/environment
+EnvironmentFile=/var/cache/starterkit/network
+Environment="IMAGE=registry.hub.docker.com/library/traefik:latest"
+ExecStartPre=/var/opt/starterkit/bin/pull-image ${IMAGE}
+ExecStartPre=/var/opt/starterkit/bin/create-balancer-settings
+ExecStart=/usr/bin/docker run --name %p                                         \
+    -p 8080:8080 -p 8443:8443 -p 8888:8888                                      \
+    -v /etc/traefik/traefik.toml:/etc/traefik/traefik.toml:ro                   \
+    -v ssl-cert-volume:/srv/ssl:ro                                              \
+    ${IMAGE} --insecureSkipVerify=true --etcd=true --etcd.useAPIV3=true --etcd.endpoint="${DEFAULT_IPV4}:2379"
+ExecStop=/usr/bin/docker stop %p
+ExecStopPost=/usr/bin/docker rm %p
+
+[Install]
+WantedBy=multi-user.target

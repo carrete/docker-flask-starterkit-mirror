@@ -1,0 +1,22 @@
+[Unit]
+Description=Nginx proxy Unit
+After=flask-app.service create-network-environment.service create-default-site.service create-htpasswd.service create-snakeoil-cert.service
+Requires=flask-app.service create-network-environment.service create-default-site.service create-htpasswd.service create-snakeoil-cert.service
+
+[Service]
+TimeoutStartSec=360
+EnvironmentFile=/var/cache/starterkit/environment
+EnvironmentFile=/var/cache/starterkit/network
+Environment="IMAGE=registry.gitlab.com/tvaughan/docker-nginx-proxy-unit:latest"
+ExecStartPre=/var/opt/starterkit/bin/pull-image ${IMAGE}
+ExecStart=/usr/bin/docker run --name %p                                         \
+    -p 8080:8080 -p 8443:8443                                                   \
+    -v default-site-volume:/etc/nginx/sites-enabled:ro                          \
+    -v ssl-cert-volume:/srv/ssl:ro                                              \
+    -v www-volume:/srv/www:ro                                                   \
+    ${IMAGE}
+ExecStop=/usr/bin/docker stop %p
+ExecStopPost=/usr/bin/docker rm %p
+
+[Install]
+WantedBy=multi-user.target

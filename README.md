@@ -34,19 +34,28 @@ Quick Start
 * Install [Docker](https://www.docker.com/).
 
 * Set some environment variables:
-  * `GITLAB_PASSWORD=<personal access token[1]>`
-  * `POSTGRES_HOSTNAME=postgres`
-  * `POSTGRES_PASSWORD=password`
-  * `SECRET_KEY=<random character string>`
+
+        export ADMIN_USERNAME="starterkit"
+        export ADMIN_PASSWORD="password"
+        export GITLAB_PASSWORD="<personal access token[1]>"
+        export STARTERKIT_DATABASE_HOSTNAME="thxwbbjc"
+        export STARTERKIT_DATABASE_TCP_PORT="5309"
+        export STARTERKIT_DATABASE_USERNAME="solmjplp"
+        export STARTERKIT_DATABASE_PASSWORD="zyzqvpjx"
+        export SECRET_KEY="nfafrbklgayddvcbowphnfilhjkldlcg"
+        export STARTERKIT_DOMAIN="127.0.0.1.xip.io"
+        export CANONICAL_HOST="www.$STARTERKIT_DOMAIN"
+        export CANONICAL_PORT="8443"
 
 [1] https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
 
 * Each in their own terminal window, run (order matters):
-  * `make -f postgres.mk`
-  * `make serve`
-  * `make -f nginx-proxy-unit.mk`
 
-* Open http://localhost.localdomain:8080
+        make -f database.mk
+        make serve
+        make -f nginx-proxy-unit.mk
+
+* Open `https://$CANONICAL_HOST:$CANONICAL_PORT`
 
 * Profit!
 
@@ -92,7 +101,7 @@ Deploy
 
 * Push a change to GitLab.
 
-* Open `http://$STARTERKIT_DOMAIN`
+* Open `https://www.$STARTERKIT_DOMAIN`
 
 * Profit!
 

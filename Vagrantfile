@@ -7,33 +7,66 @@ end
 
 Vagrant.configure("2") do |config|
   config.ignition.enabled = true
-  config.ignition.path = "config.ign"
 
-  config.vm.network "private_network", type: "dhcp"
+  config.vm.provider "virtualbox" do |virtualbox|
+    virtualbox.cpus = 2
+    virtualbox.memory = 1024
+  end
 
-  config.vm.provision "file", source: "./coreos", destination: "/tmp/coreos"
+  config.vm.define "database" do |database|
+    database.vm.box = "coreos-stable"
+    database.vm.hostname = database.ignition.hostname = "database"
+    database.ignition.drive_name = "database"
+    database.ignition.path = "coreos-vagrant-virtualbox.ign"
 
-  config.vm.provision "shell", inline: <<-SCRIPT
-    sudo rsync -r /tmp/coreos/ /
-  SCRIPT
+    ip = "172.17.8.100"
+    database.vm.network :private_network, ip: ip
+    database.ignition.ip = ip
 
-  config.vm.define "postgres" do |postgres|
-    postgres.vm.box = "coreos-stable"
-    postgres.vm.hostname = postgres.ignition.hostname = ENV["POSTGRES_HOSTNAME"]
-    postgres.ignition.drive_name = "postgres"
-
-    postgres.vm.provision "shell", inline: <<-SCRIPT
-      /var/opt/starterkit/bin/provision-postgres
+    database.vm.provision "file", source: "./coreos/database", destination: "/tmp/coreos"
+    database.vm.provision "shell", inline: <<-SCRIPT
+      sudo rsync -r /tmp/coreos/ /
+      /var/opt/starterkit/bin/provision-database
     SCRIPT
   end
 
-  config.vm.define "instance" do |instance|
-    instance.vm.box = "coreos-stable"
-    instance.vm.hostname = instance.ignition.hostname = "instance"
-    instance.ignition.drive_name = "instance"
+  (1..3).each do |i|
+    config.vm.define name = "instance-%02d" % i do |instance|
+      instance.vm.box = "coreos-stable"
+      instance.vm.hostname = instance.ignition.hostname = name
+      instance.ignition.drive_name = name
+      instance.ignition.path = "coreos-vagrant-virtualbox.ign"
 
-    instance.vm.provision "shell", inline: <<-SCRIPT
-      /var/opt/starterkit/bin/provision-instance
+      ip = "172.17.8.#{i+100}"
+      instance.vm.network :private_network, ip: ip
+      instance.ignition.ip = ip
+
+      instance.vm.provision "file", source: "./coreos/instance", destination: "/tmp/coreos"
+      instance.vm.provision "shell", inline: <<-SCRIPT
+        sudo rsync -r /tmp/coreos/ /
+        /var/opt/starterkit/bin/provision-instance
+      SCRIPT
+    end
+  end
+
+  config.vm.define "balancer" do |balancer|
+    balancer.vm.box = "coreos-stable"
+    balancer.vm.hostname = balancer.ignition.hostname = "balancer"
+    balancer.ignition.drive_name = "balancer"
+    balancer.ignition.path = "coreos-vagrant-virtualbox.ign"
+
+    ip = "172.17.8.200"
+    balancer.vm.network :private_network, ip: ip
+    balancer.ignition.ip = ip
+
+    [8080, 8443, 8888].each do |port|
+      balancer.vm.network "forwarded_port", host: port, guest: port, guest_ip: ip, protocol: "tcp"
+    end
+
+    balancer.vm.provision "file", source: "./coreos/balancer", destination: "/tmp/coreos"
+    balancer.vm.provision "shell", inline: <<-SCRIPT
+      sudo rsync -r /tmp/coreos/ /
+      /var/opt/starterkit/bin/provision-balancer
     SCRIPT
   end
 end

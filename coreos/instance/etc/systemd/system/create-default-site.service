@@ -1,0 +1,20 @@
+[Unit]
+Description=Create default site.
+After=docker.service create-network-environment.service
+Requires=docker.service create-network-environment.service
+
+[Service]
+TimeoutStartSec=360
+Type=oneshot
+EnvironmentFile=/var/cache/starterkit/environment
+EnvironmentFile=/var/cache/starterkit/network
+Environment="IMAGE=registry.gitlab.com/tvaughan/docker-nginx-proxy-unit:latest"
+ExecStartPre=/var/opt/starterkit/bin/pull-image ${IMAGE}
+ExecStart=/usr/bin/docker run --rm                                              \
+    -e CANONICAL_HOST=${CANONICAL_HOST}                                         \
+    -e CANONICAL_PORT=${CANONICAL_PORT}                                         \
+    -e UNIT_HOST=${DEFAULT_IPV4}                                                \
+    -e UNIT_PORT=3000                                                           \
+    -v default-site-volume:/mnt/workdir                                         \
+    ${IMAGE}                                                                    \
+    create-default-site

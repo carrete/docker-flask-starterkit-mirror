@@ -14,10 +14,11 @@ pull-latest: network-create-starterkit
 	@docker pull $(REGISTRY)/$(CONTAINER):$(VERSION)
 
 .PHONY: create-ssl-cert
-create-ssl-cert: pull-latest
+create-ssl-cert:
+	@docker pull registry.gitlab.com/tvaughan/docker-openssl
 	@docker run --network starterkit-network --rm				\
 	    -v ssl-cert-volume:/mnt/workdir					\
-	    $(REGISTRY)/$(CONTAINER):$(VERSION)					\
+	    registry.gitlab.com/tvaughan/docker-openssl				\
 	    create-snakeoil-cert
 
 .PHONY: create-htpasswd
@@ -30,10 +31,10 @@ create-htpasswd: is-defined-ADMIN_USERNAME is-defined-ADMIN_PASSWORD pull-latest
 	    create-htpasswd
 
 .PHONY: create-default-site
-create-default-site: pull-latest
+create-default-site: is-defined-CANONICAL_HOST is-defined-CANONICAL_PORT pull-latest
 	@docker run --network starterkit-network --rm				\
-	    -e CANONICAL_HOST=localhost.localdomain				\
-	    -e CANONICAL_PORT=8443						\
+	    -e CANONICAL_HOST="$(CANONICAL_HOST)"				\
+	    -e CANONICAL_PORT="$(CANONICAL_PORT)"				\
 	    -e UNIT_HOST=flask-app                                              \
 	    -e UNIT_PORT=3000                                                   \
 	    -v default-site-volume:/mnt/workdir					\
@@ -45,7 +46,7 @@ serve: create-ssl-cert create-htpasswd create-default-site
 ifneq ($(shell docker ps -q --filter name=nginx-proxy-unit --format RUNNING),RUNNING)
 	@docker run --network starterkit-network --rm				\
 	    --name nginx-proxy-unit						\
-	    -p 8080:80 -p 8443:443						\
+	    -p 8080:8080 -p 8443:8443						\
 	    -v ssl-cert-volume:/srv/ssl:ro					\
 	    -v www-volume:/srv/www:ro						\
 	    -v default-site-volume:/etc/nginx/sites-enabled:ro			\
