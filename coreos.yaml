@@ -4,7 +4,7 @@ etcd:
   listen_client_urls:          "http://0.0.0.0:2379"
   initial_advertise_peer_urls: "http://{PRIVATE_IPV4}:2380"
   advertise_client_urls:       "http://{PRIVATE_IPV4}:2379"
-  discovery:                   "https://discovery.etcd.io/token"
+  discovery: "https://discovery.etcd.io/0c282647f2b4e7c3cb3a1ead2d92159e"
 
 systemd:
   units:
