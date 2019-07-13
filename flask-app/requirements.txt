@@ -5,7 +5,7 @@ beautifulsoup4==4.7.1
 black==18.9b0
 coverage==4.5.2
 html5lib==1.0.1
-pytest-cov==2.6.1
+pytest-cov==2.7.1
 pytest-env==0.6.2
 pytest==4.3.0
 pyupio==1.0.2
