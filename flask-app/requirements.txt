@@ -3,7 +3,7 @@
 bandit==1.5.1
 beautifulsoup4==4.7.1
 black==18.9b0
-coverage==4.5.2
+coverage==5.0
 html5lib==1.0.1
 pytest-cov==2.6.1
 pytest-env==0.6.2
