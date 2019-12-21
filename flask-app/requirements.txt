@@ -10,4 +10,4 @@ pytest-env==0.6.2
 pytest==4.3.0
 pyupio==1.0.2
 safety==1.8.5
-twine==1.13.0
+twine==3.1.1
