@@ -91,8 +91,7 @@ shell: is-in-container
 
 .PHONY: watch
 watch: is-in-container
-	@reflex -g '*' -G "*coverage*" -G "*htmlcov*" -s --			\
-	    $(SHELL) -c "$(MAKE) serve"
+	@modd -f modd.flask-app.conf
 
 .PHONY: create-locale
 create-locale: is-in-container is-defined-LANGUAGE
