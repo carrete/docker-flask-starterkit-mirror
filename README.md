@@ -1,4 +1,4 @@
-[![build status](https://gitlab.com/tvaughan/docker-flask-starterkit/badges/master/build.svg)](https://gitlab.com/tvaughan/docker-flask-starterkit/commits/master)
+[![pipeline status](https://gitlab.com/tvaughan/docker-flask-starterkit/badges/master/pipeline.svg)](https://gitlab.com/tvaughan/docker-flask-starterkit/commits/master)
 
 Welcome to Starterkit
 ===
