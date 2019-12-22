@@ -7,7 +7,7 @@ Requires=docker.service create-network-environment.service
 TimeoutStartSec=360
 EnvironmentFile=/var/cache/starterkit/environment
 EnvironmentFile=/var/cache/starterkit/network
-Environment="IMAGE=registry.hub.docker.com/library/postgres:11"
+Environment="IMAGE=registry.hub.docker.com/library/postgres:12"
 ExecStartPre=/var/opt/starterkit/bin/pull-image ${IMAGE}
 ExecStart=/usr/bin/docker run --name %p                                         \
     -e POSTGRES_DB=starterkit                                                   \
